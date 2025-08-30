@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import '../../data/datasources/remote/challenge_remote_data_source.dart';
 import '../../data/datasources/remote/user_progress_remote_data_source.dart';
 import '../../data/datasources/local/challenge_local_data_source.dart';
+import '../../data/datasources/local/solar_system_local_data_source.dart';
 import '../../data/repositories/challenge_repository_impl.dart';
 import '../../data/repositories/achievement_repository_impl.dart';
 import '../../data/repositories/user_progress_repository_impl.dart';
+import '../../data/repositories/solar_system_repository_impl.dart';
 import '../../domain/usecases/get_daily_challenge.dart';
 import '../../domain/usecases/get_quick_challenge.dart';
 import '../../domain/usecases/get_category_challenge.dart';
 import '../../domain/usecases/submit_challenge_answer.dart';
 import '../../domain/usecases/get_user_achievements.dart';
+import '../../domain/usecases/get_solar_system.dart';
+import '../../domain/usecases/get_planet_details.dart';
 import '../../presentation/providers/challenge_provider.dart';
+import '../../presentation/providers/solar_system_provider.dart';
 
 class DependencyInjection {
   static Widget buildProviders({required Widget child}) {
@@ -26,6 +31,9 @@ class DependencyInjection {
         ),
         Provider<ChallengeLocalDataSource>(
           create: (_) => ChallengeLocalDataSourceImpl(),
+        ),
+        Provider<SolarSystemLocalDataSource>(
+          create: (_) => SolarSystemLocalDataSourceImpl(),
         ),
         
         // Repositories
@@ -45,6 +53,11 @@ class DependencyInjection {
           create: (context) => UserProgressRepositoryImpl(
             context.read<ChallengeLocalDataSource>(),
             context.read<UserProgressRemoteDataSource>(),
+          ),
+        ),
+        Provider<SolarSystemRepositoryImpl>(
+          create: (context) => SolarSystemRepositoryImpl(
+            context.read<SolarSystemLocalDataSource>(),
           ),
         ),
         
@@ -76,8 +89,18 @@ class DependencyInjection {
             context.read<UserProgressRepositoryImpl>(),
           ),
         ),
+        Provider<GetSolarSystem>(
+          create: (context) => GetSolarSystem(
+            context.read<SolarSystemRepositoryImpl>(),
+          ),
+        ),
+        Provider<GetPlanetDetails>(
+          create: (context) => GetPlanetDetails(
+            context.read<SolarSystemRepositoryImpl>(),
+          ),
+        ),
         
-        // Main Provider
+        // Main Providers
         ChangeNotifierProvider<ChallengeProvider>(
           create: (context) => ChallengeProvider(
             getDailyChallenge: context.read<GetDailyChallenge>(),
@@ -86,6 +109,12 @@ class DependencyInjection {
             submitChallengeAnswer: context.read<SubmitChallengeAnswer>(),
             getUserAchievements: context.read<GetUserAchievements>(),
             userProgressRepository: context.read<UserProgressRepositoryImpl>(),
+          ),
+        ),
+        ChangeNotifierProvider<SolarSystemProvider>(
+          create: (context) => SolarSystemProvider(
+            getSolarSystem: context.read<GetSolarSystem>(),
+            getPlanetDetails: context.read<GetPlanetDetails>(),
           ),
         ),
       ],

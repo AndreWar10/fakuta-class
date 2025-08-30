@@ -149,20 +149,23 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.blue.withValues(alpha: 0.5),
-                    width: 1,
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.blue.withValues(alpha: 0.5),
+                      width: 1,
+                    ),
                   ),
-                ),
-                child: const Icon(
-                  Icons.quiz,
-                  color: Colors.blue,
-                  size: 28,
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.blue,
+                    size: 28,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),

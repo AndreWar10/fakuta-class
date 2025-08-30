@@ -1,0 +1,19 @@
+name: fukuta_backend
+description: "Backend para o app Sistema Solar - Sistema de Desafios Espaciais"
+version: 1.0.0
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  shelf_cors_headers: ^1.0.0
+  sqlite3: ^2.4.0
+  path: ^1.8.3
+  crypto: ^3.0.3
+  uuid: ^4.2.1
+
+dev_dependencies:
+  test: ^1.24.0
+  http: ^1.1.0

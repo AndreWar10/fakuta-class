@@ -165,60 +165,58 @@ class _SpaceHomePageState extends State<SpaceHomePage>
                   children: [
                     // Top Section
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      child: Container(
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Animated Title
-                            AnimatedBuilder(
-                              animation: _titleAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _titleAnimation.value,
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.rocket_launch,
-                                        size: math.max(MediaQuery.of(context).size.width * 0.2, 60),
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Animated Title
+                          AnimatedBuilder(
+                            animation: _titleAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _titleAnimation.value,
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.rocket_launch,
+                                      size: math.max(MediaQuery.of(context).size.width * 0.2, 60),
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                                    Text(
+                                      'EXPLORE',
+                                      style: TextStyle(
+                                        fontSize: math.max(MediaQuery.of(context).size.width * 0.12, 32),
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.white,
+                                        letterSpacing: 8,
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                                      Text(
-                                        'EXPLORE',
-                                        style: TextStyle(
-                                          fontSize: math.max(MediaQuery.of(context).size.width * 0.12, 32),
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          letterSpacing: 8,
-                                        ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                    Text(
+                                      'THE UNIVERSE',
+                                      style: TextStyle(
+                                        fontSize: math.max(MediaQuery.of(context).size.width * 0.06, 18),
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.blue[200],
+                                        letterSpacing: 4,
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                                      Text(
-                                        'THE UNIVERSE',
-                                        style: TextStyle(
-                                          fontSize: math.max(MediaQuery.of(context).size.width * 0.06, 18),
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.blue[200],
-                                          letterSpacing: 4,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
 
                     // Center Section
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.45,
+                      height: MediaQuery.of(context).size.height * 0.4,
                       child: Container(
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
+                        
+                        padding: EdgeInsets.all(0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -255,14 +253,14 @@ class _SpaceHomePageState extends State<SpaceHomePage>
                               },
                             ),
                             
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                            SizedBox(height: 60),
                             
                             // Description
                             Flexible(
                               child: Text(
                                 'Descubra os mistérios do nosso sistema solar',
                                 style: TextStyle(
-                                  fontSize: math.max(MediaQuery.of(context).size.width * 0.045, 16),
+                                  fontSize: 14,
                                   color: Colors.grey[300],
                                   height: 1.5,
                                 ),
@@ -272,7 +270,7 @@ class _SpaceHomePageState extends State<SpaceHomePage>
                               ),
                             ),
                             
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                            // SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                             
                             Flexible(
                               child: Text(
@@ -293,7 +291,7 @@ class _SpaceHomePageState extends State<SpaceHomePage>
 
                     // Bottom Section
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.15,
+                      height: MediaQuery.of(context).size.height * 0.2,
                       child: Container(
                         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
                         child: Column(
@@ -905,19 +903,16 @@ class _PlanetCardState extends State<PlanetCard>
                               AnimatedOpacity(
                                 opacity: _glowAnimation.value,
                                 duration: const Duration(milliseconds: 600),
-                                child: Container(
-                                  height: 80,
-                                  child: Text(
-                                    widget.planet.resume,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Colors.grey[300],
-                                      height: 1.4,
-                                    ),
-                                    textAlign: TextAlign.justify,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                child: Text(
+                                  widget.planet.resume,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[300],
+                                    height: 1.4,
                                   ),
+                                  textAlign: TextAlign.justify,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               

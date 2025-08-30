@@ -1,12 +1,14 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import '../../data/datasources/remote/challenge_remote_data_source.dart';
+import '../../data/datasources/remote/user_progress_remote_data_source.dart';
 import '../../data/datasources/local/challenge_local_data_source.dart';
 import '../../data/repositories/challenge_repository_impl.dart';
 import '../../data/repositories/achievement_repository_impl.dart';
 import '../../data/repositories/user_progress_repository_impl.dart';
 import '../../domain/usecases/get_daily_challenge.dart';
 import '../../domain/usecases/get_quick_challenge.dart';
+import '../../domain/usecases/get_category_challenge.dart';
 import '../../domain/usecases/submit_challenge_answer.dart';
 import '../../domain/usecases/get_user_achievements.dart';
 import '../../presentation/providers/challenge_provider.dart';
@@ -18,6 +20,9 @@ class DependencyInjection {
         // Data Sources
         Provider<ChallengeRemoteDataSource>(
           create: (_) => ChallengeRemoteDataSourceImpl(),
+        ),
+        Provider<UserProgressRemoteDataSource>(
+          create: (_) => UserProgressRemoteDataSourceImpl(),
         ),
         Provider<ChallengeLocalDataSource>(
           create: (_) => ChallengeLocalDataSourceImpl(),
@@ -39,6 +44,7 @@ class DependencyInjection {
         Provider<UserProgressRepositoryImpl>(
           create: (context) => UserProgressRepositoryImpl(
             context.read<ChallengeLocalDataSource>(),
+            context.read<UserProgressRemoteDataSource>(),
           ),
         ),
         
@@ -50,6 +56,11 @@ class DependencyInjection {
         ),
         Provider<GetQuickChallenge>(
           create: (context) => GetQuickChallenge(
+            context.read<ChallengeRepositoryImpl>(),
+          ),
+        ),
+        Provider<GetCategoryChallenge>(
+          create: (context) => GetCategoryChallenge(
             context.read<ChallengeRepositoryImpl>(),
           ),
         ),
@@ -71,8 +82,10 @@ class DependencyInjection {
           create: (context) => ChallengeProvider(
             getDailyChallenge: context.read<GetDailyChallenge>(),
             getQuickChallenge: context.read<GetQuickChallenge>(),
+            getCategoryChallenge: context.read<GetCategoryChallenge>(),
             submitChallengeAnswer: context.read<SubmitChallengeAnswer>(),
             getUserAchievements: context.read<GetUserAchievements>(),
+            userProgressRepository: context.read<UserProgressRepositoryImpl>(),
           ),
         ),
       ],

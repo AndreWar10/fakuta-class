@@ -1,3 +1,7 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
+import 'package:flutter/material.dart';
+
 class Question {
   final int id;
   final String question;
@@ -21,22 +25,30 @@ class Question {
 
   List<String> get allAnswers {
     final answers = [correctAnswer, ...wrongAnswers];
-    answers.shuffle();
     return answers;
   }
 
   bool isCorrect(String answer) {
-    return answer.toLowerCase() == correctAnswer.toLowerCase();
+    final result = answer.toLowerCase() == correctAnswer.toLowerCase();
+    debugPrint('🔍 Question.isCorrect: "$answer" == "$correctAnswer" = $result');
+    return result;
   }
 
   int calculatePoints(int timeSpent, String answer) {
-    if (!isCorrect(answer)) return 0;
+    debugPrint('🔍 Question.calculatePoints: tempo=$timeSpent, resposta="$answer", pontos base=$points');
+    
+    if (!isCorrect(answer)) {
+      debugPrint('🔍 Resposta incorreta, retornando 0 pontos');
+      return 0;
+    }
     
     int timeBonus = 0;
     if (timeSpent <= 10) timeBonus = 5;
     else if (timeSpent <= 20) timeBonus = 3;
     else if (timeSpent <= 30) timeBonus = 1;
     
-    return points + timeBonus;
+    final totalPoints = points + timeBonus;
+    debugPrint('🔍 Pontos calculados: base=$points + bonus=$timeBonus = $totalPoints');
+    return totalPoints;
   }
 }

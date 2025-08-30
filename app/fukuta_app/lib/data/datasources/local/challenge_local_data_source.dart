@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../models/question_model.dart';
 import '../../models/achievement_model.dart';
@@ -75,21 +76,46 @@ class ChallengeLocalDataSourceImpl implements ChallengeLocalDataSource {
   @override
   Future<void> saveUserProgress(UserProgressModel progress) async {
     final box = await Hive.openBox(progressBox);
-    await box.put('progress', progress.toJson());
+    
+    try {
+      await box.put('progress', progress);
+      debugPrint('💾 saveUserProgress: Progresso salvo no Hive - ${progress.totalPoints} pontos');
+    } catch (e) {
+      debugPrint('⚠️ saveUserProgress: Erro ao salvar no Hive: $e');
+      // Fallback para JSON
+      try {
+        await box.put('progress', progress.toJson());
+        debugPrint('💾 saveUserProgress: Fallback para JSON bem-sucedido');
+      } catch (jsonError) {
+        debugPrint('💥 saveUserProgress: Erro no fallback JSON: $jsonError');
+      }
+    }
   }
 
   @override
   Future<UserProgressModel?> getUserProgress() async {
     try {
       final box = await Hive.openBox(progressBox);
-      final data = box.get('progress') as Map<String, dynamic>?;
       
-      if (data != null) {
-        return UserProgressModel.fromJson(data);
+      // Tentar ler diretamente do Hive primeiro
+      final progress = box.get('progress') as UserProgressModel?;
+      if (progress != null) {
+        debugPrint('📱 getUserProgress: Progresso lido do Hive - ${progress.totalPoints} pontos');
+        return progress;
       }
       
+      // Fallback para JSON
+      final data = box.get('progress') as Map<String, dynamic>?;
+      if (data != null) {
+        final jsonProgress = UserProgressModel.fromJson(data);
+        debugPrint('📱 getUserProgress: Progresso lido do JSON - ${jsonProgress.totalPoints} pontos');
+        return jsonProgress;
+      }
+      
+      debugPrint('📱 getUserProgress: Nenhum progresso encontrado no cache');
       return null;
     } catch (e) {
+      debugPrint('⚠️ getUserProgress: Erro ao ler progresso: $e');
       return null;
     }
   }

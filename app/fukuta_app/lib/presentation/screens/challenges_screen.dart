@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/challenge_provider.dart';
-import '../../domain/entities/challenge.dart';
-import '../../domain/entities/user_progress.dart';
 import 'widgets/challenge_card.dart';
 import 'widgets/progress_card.dart';
 import 'widgets/achievement_card.dart';
@@ -104,6 +102,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     child: AnimatedBuilder(
                       animation: _cardsAnimation,
                       builder: (context, child) {
+                        debugPrint('🎨 ChallengesScreen: ProgressCard - provider.userProgress: ${provider.userProgress?.totalPoints} pontos, ${provider.userProgress?.correctAnswers} acertos, ${provider.userProgress?.questionsAnswered} respondidas');
+                        debugPrint('🎨 ChallengesScreen: ProgressCard - provider.userProgress hash: ${provider.userProgress?.hashCode}');
+                        
                         return Transform.scale(
                           scale: _cardsAnimation.value,
                           child: Padding(
@@ -294,7 +295,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             subtitle: 'Uma pergunta especial para hoje!',
             icon: '🌅',
             color: Colors.blue,
-            onTap: () => provider.loadDailyChallenge(),
+            onTap: () => provider.loadDailyChallenge(context),
             isAvailable: true,
           ),
           
@@ -306,20 +307,20 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             subtitle: '3 perguntas para testar seu conhecimento!',
             icon: '⚡',
             color: Colors.green,
-            onTap: () => provider.loadQuickChallenge(),
+            onTap: () => provider.loadQuickChallenge(context),
             isAvailable: true,
           ),
           
           const SizedBox(height: 12),
           
           // Category Challenges
-          _buildCategoryChallenges(),
+          _buildCategoryChallenges(provider),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryChallenges() {
+  Widget _buildCategoryChallenges(ChallengeProvider provider) {
     final categories = ['Planetas', 'Sistema Solar', 'Temperatura', 'Astronomia'];
     final colors = [Colors.purple, Colors.orange, Colors.red, Colors.teal];
     
@@ -351,7 +352,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   icon: '🌍',
                   color: colors[index],
                   onTap: () {
-                    // Implementar desafio por categoria
+                    provider.loadCategoryChallenge(categories[index], context);
                   },
                   isAvailable: true,
                   isCompact: true,
@@ -390,7 +391,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               itemBuilder: (context, index) {
                 final achievement = provider.achievements[index];
                 return Container(
-                  width: 180,
+                  width: 190,
                   margin: const EdgeInsets.only(right: 16),
                   child: AchievementCard(
                     achievement: achievement,

@@ -9,6 +9,7 @@ import 'routes/challenge_routes.dart';
 import 'routes/question_routes.dart';
 import 'routes/achievement_routes.dart';
 import 'routes/stats_routes.dart';
+import 'routes/user_progress_routes.dart';
 
 void main() async {
   // Inicializar banco de dados
@@ -23,6 +24,7 @@ void main() async {
   questionRoutes(router, dbService);
   achievementRoutes(router, dbService);
   statsRoutes(router, dbService);
+  userProgressRoutes(router, dbService);
   
   // Rota de health check
   router.get('/health', (Request request) {
@@ -86,6 +88,26 @@ void main() async {
                 <strong>/stats</strong> - Estatísticas globais
             </div>
             
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <strong>/user-progress</strong> - Salvar progresso do usuário
+            </div>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <strong>/user-progress/{deviceId}</strong> - Obter progresso do usuário
+            </div>
+            
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <strong>/user-progress/{deviceId}</strong> - Atualizar progresso do usuário
+            </div>
+            
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <strong>/user-progress/{deviceId}</strong> - Resetar progresso do usuário
+            </div>
+            
             <p style="text-align: center; margin-top: 40px; color: #BDBDBD;">
                 🌟 Sistema de Desafios Espaciais - Explore o universo! 🌟
             </p>
@@ -101,7 +123,7 @@ void main() async {
       .addHandler(router);
   
   // Iniciar servidor
-  final server = await io.serve(handler, 'localhost', 8080);
+  final server = await io.serve(handler, 'localhost', 8081);
   
   print('🚀 Fukuta Backend rodando em http://localhost:${server.port}');
   print('📚 Sistema de Desafios Espaciais Online!');

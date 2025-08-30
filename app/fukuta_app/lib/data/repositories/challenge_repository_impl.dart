@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../domain/entities/challenge.dart';
 import '../../domain/entities/question.dart';
 import '../../domain/repositories/challenge_repository.dart';
@@ -11,12 +13,43 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
 
   ChallengeRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
+  // Método auxiliar para converter dados da API para o formato do modelo
+  Map<String, dynamic> _convertApiDataToModel(Map<String, dynamic> apiData) {
+    debugPrint('🔍 API Data recebida: $apiData');
+    
+    // A API já retorna as respostas embaralhadas, então vamos usar a primeira como correta
+    final allAnswers = List<String>.from(apiData['answers']);
+    final correctAnswer = allAnswers[0]; // Primeira resposta como correta
+    final wrongAnswers = allAnswers.skip(1).toList(); // Resto como erradas
+    
+    debugPrint('🔍 Respostas: $allAnswers');
+    debugPrint('🔍 Resposta correta: $correctAnswer');
+    debugPrint('🔍 Respostas erradas: $wrongAnswers');
+    
+    final result = {
+      'id': apiData['id'],
+      'question': apiData['question'],
+      'correct_answer': correctAnswer,
+      'wrong_answers': wrongAnswers,
+      'explanation': apiData['explanation'] ?? '',
+      'difficulty': apiData['difficulty'],
+      'category': apiData['category'],
+      'points': apiData['points'],
+    };
+    
+    debugPrint('🔍 Dados convertidos: $result');
+    return result;
+  }
+
   @override
   Future<Challenge> getDailyChallenge() async {
     try {
       // Tentar buscar da API
       final data = await remoteDataSource.getDailyChallenge();
-      final question = QuestionModel.fromJson(data);
+      
+      // Converter dados da API para o formato esperado pelo modelo
+      final questionData = _convertApiDataToModel(data);
+      final question = QuestionModel.fromJson(questionData);
       
       return Challenge(
         id: 'daily_${DateTime.now().millisecondsSinceEpoch}',
@@ -51,9 +84,11 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     try {
       // Tentar buscar da API
       final data = await remoteDataSource.getQuickChallenge();
-      final questions = (data['questions'] as List)
-          .map((q) => QuestionModel.fromJson(q))
-          .toList();
+      final questions = (data['questions'] as List).map((q) {
+        // Converter dados da API para o formato esperado pelo modelo
+        final questionData = _convertApiDataToModel(q);
+        return QuestionModel.fromJson(questionData);
+      }).toList();
       
       return Challenge(
         id: 'quick_${DateTime.now().millisecondsSinceEpoch}',
@@ -87,9 +122,11 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
     try {
       // Tentar buscar da API
       final data = await remoteDataSource.getCategoryChallenge(category);
-      final questions = (data['questions'] as List)
-          .map((q) => QuestionModel.fromJson(q))
-          .toList();
+      final questions = (data['questions'] as List).map((q) {
+        // Converter dados da API para o formato esperado pelo modelo
+        final questionData = _convertApiDataToModel(q);
+        return QuestionModel.fromJson(questionData);
+      }).toList();
       
       return Challenge(
         id: 'category_${category}_${DateTime.now().millisecondsSinceEpoch}',
@@ -145,33 +182,32 @@ class ChallengeRepositoryImpl implements ChallengeRepository {
       
       throw Exception('Perguntas insuficientes');
     } catch (e) {
-      throw Exception('Erro ao obter perguntas aleatórias: $e');
+      throw Exception('Erro ao buscar perguntas aleatórias: $e');
     }
   }
 
   @override
-  Future<void> submitAnswer(int questionId, String answer, int timeSpent) async {
+  Future<Map<String, dynamic>> submitAnswer(int questionId, String answer, int timeSpent) async {
     try {
-      await remoteDataSource.submitAnswer(questionId, answer, timeSpent);
+      final result = await remoteDataSource.submitAnswer(questionId, answer, timeSpent);
+      return result;
     } catch (e) {
-      // Se falhar na API, apenas logar o erro
-      print('Erro ao submeter resposta: $e');
+      throw Exception('Erro ao submeter resposta: $e');
     }
   }
 
   @override
   Future<void> submitBatchAnswers(List<Map<String, dynamic>> answers) async {
     try {
-      // Implementar submissão em lote se necessário
       for (final answer in answers) {
-        await submitAnswer(
+        await remoteDataSource.submitAnswer(
           answer['questionId'] as int,
           answer['answer'] as String,
           answer['timeSpent'] as int,
         );
       }
     } catch (e) {
-      print('Erro ao submeter respostas em lote: $e');
+      throw Exception('Erro ao submeter respostas em lote: $e');
     }
   }
 }

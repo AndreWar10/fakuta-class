@@ -1,6 +1,7 @@
 import 'package:sqlite3/sqlite3.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
+import 'dart:convert';
 
 class DatabaseService {
   late Database _database;
@@ -63,6 +64,22 @@ class DatabaseService {
         total_points_earned INTEGER DEFAULT 0,
         most_popular_category TEXT,
         last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+    
+    // Tabela de progresso do usuário
+    _database.execute('''
+      CREATE TABLE IF NOT EXISTS user_progress (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        device_id TEXT UNIQUE NOT NULL,
+        total_points INTEGER DEFAULT 0,
+        questions_answered INTEGER DEFAULT 0,
+        correct_answers INTEGER DEFAULT 0,
+        category_points TEXT DEFAULT '{}',
+        difficulty_points TEXT DEFAULT '{}',
+        last_played DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     ''');
     
@@ -357,6 +374,95 @@ class DatabaseService {
       newPointsEarned,
       popularCategory ?? currentStats['most_popular_category']
     ]);
+  }
+  
+  // Métodos para progresso do usuário
+  Future<void> saveUserProgress({
+    required String deviceId,
+    required int totalPoints,
+    required int questionsAnswered,
+    required int correctAnswers,
+    required Map<String, dynamic> categoryPoints,
+    required Map<String, dynamic> difficultyPoints,
+  }) async {
+    final categoryPointsJson = json.encode(categoryPoints);
+    final difficultyPointsJson = json.encode(difficultyPoints);
+    
+    // Tentar inserir, se falhar (device_id já existe), atualizar
+    try {
+      _database.execute('''
+        INSERT INTO user_progress (
+          device_id, total_points, questions_answered, correct_answers,
+          category_points, difficulty_points, last_played, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      ''', [
+        deviceId, totalPoints, questionsAnswered, correctAnswers,
+        categoryPointsJson, difficultyPointsJson
+      ]);
+    } catch (e) {
+      // Se falhar, atualizar registro existente
+      _database.execute('''
+        UPDATE user_progress 
+        SET total_points = ?, questions_answered = ?, correct_answers = ?,
+            category_points = ?, difficulty_points = ?, last_played = CURRENT_TIMESTAMP,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE device_id = ?
+      ''', [
+        totalPoints, questionsAnswered, correctAnswers,
+        categoryPointsJson, difficultyPointsJson, deviceId
+      ]);
+    }
+  }
+  
+  Map<String, dynamic>? getUserProgress(String deviceId) {
+    final result = _database.select('SELECT * FROM user_progress WHERE device_id = ?', [deviceId]);
+    if (result.isEmpty) return null;
+    
+    final row = result.first;
+    return {
+      'deviceId': row[1],
+      'totalPoints': row[2],
+      'questionsAnswered': row[3],
+      'correctAnswers': row[4],
+      'categoryPoints': json.decode(row[5] ?? '{}'),
+      'difficultyPoints': json.decode(row[6] ?? '{}'),
+      'lastPlayed': row[7],
+      'createdAt': row[8],
+      'updatedAt': row[9]
+    };
+  }
+  
+  Future<void> updateUserProgress({
+    required String deviceId,
+    required int totalPoints,
+    required int questionsAnswered,
+    required int correctAnswers,
+    required Map<String, dynamic> categoryPoints,
+    required Map<String, dynamic> difficultyPoints,
+  }) async {
+    final categoryPointsJson = json.encode(categoryPoints);
+    final difficultyPointsJson = json.encode(difficultyPoints);
+    
+    _database.execute('''
+      UPDATE user_progress 
+      SET total_points = ?, questions_answered = ?, correct_answers = ?,
+          category_points = ?, difficulty_points = ?, last_played = CURRENT_TIMESTAMP,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE device_id = ?
+    ''', [
+      totalPoints, questionsAnswered, correctAnswers,
+      categoryPointsJson, difficultyPointsJson, deviceId
+    ]);
+  }
+  
+  Future<void> resetUserProgress(String deviceId) async {
+    _database.execute('''
+      UPDATE user_progress 
+      SET total_points = 0, questions_answered = 0, correct_answers = 0,
+          category_points = '{}', difficulty_points = '{}',
+          last_played = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
+      WHERE device_id = ?
+    ''', [deviceId]);
   }
   
   void close() {

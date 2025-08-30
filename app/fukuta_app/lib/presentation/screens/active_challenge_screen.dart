@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/challenge_provider.dart';
 import '../../domain/entities/challenge.dart';
-import '../../domain/entities/question.dart';
 import 'widgets/question_card.dart';
 import 'widgets/timer_widget.dart';
 

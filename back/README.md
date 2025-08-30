@@ -1,306 +1,247 @@
-# 🚀 Fukuta Backend - Sistema de Desafios Espaciais
+# 🚀 Fukuta Backend - Sistema Solar
 
-Backend em Dart para o app Sistema Solar com sistema de desafios de perguntas e respostas sobre astronomia.
+Backend para o app **Fukuta** com sistema de desafios espaciais desenvolvido em **Dart** usando **Shelf**.
 
-## ✨ Funcionalidades
+## 🌟 **Funcionalidades**
 
-- **Sistema de Perguntas**: Banco de perguntas sobre o sistema solar
-- **Desafios**: Múltiplos tipos de desafios (diário, rápido, por categoria)
-- **Sistema de Pontuação**: Pontos baseados em acertos e tempo de resposta
-- **Conquistas**: Badges e achievements por milestones
-- **Estatísticas**: Relatórios detalhados de performance
-- **API RESTful**: Endpoints organizados e documentados
+- **Sistema de Desafios** - Perguntas sobre astronomia e sistema solar
+- **Sistema de Conquistas** - Desbloqueie conquistas baseadas em pontos
+- **Progresso do Usuário** - Persistência completa no SQLite
+- **Estatísticas Globais** - Métricas de uso do sistema
+- **API RESTful** - Endpoints para integração com frontend
 
-## 🛠️ Tecnologias
+## 🛠️ **Tecnologias**
 
 - **Dart** - Linguagem principal
 - **Shelf** - Framework web para Dart
 - **SQLite** - Banco de dados local
-- **CORS** - Suporte a requisições cross-origin
+- **Shelf Router** - Roteamento HTTP
 
-## 📦 Instalação
+## 📋 **Pré-requisitos**
 
-1. **Instalar Dart SDK** (versão 3.6.0 ou superior)
-2. **Clonar o projeto**:
-   ```bash
-   cd back
-   ```
-3. **Instalar dependências**:
-   ```bash
-   dart pub get
-   ```
-4. **Executar o servidor**:
-   ```bash
-   dart run lib/main.dart
-   ```
+- **Dart SDK** versão 3.6.0 ou superior
+- **Git** para clonar o repositório
 
-## 🌐 Endpoints da API
+### **Instalar Dart SDK**
 
-### 📚 Perguntas
-
-| Método | Endpoint | Descrição |
-|--------|----------|------------|
-| `GET` | `/questions` | Listar todas as perguntas |
-| `GET` | `/questions/random` | Obter pergunta aleatória |
-| `GET` | `/questions/{id}` | Obter pergunta por ID |
-| `GET` | `/questions/category/{category}` | Perguntas por categoria |
-| `GET` | `/questions/difficulty/{difficulty}` | Perguntas por dificuldade |
-| `GET` | `/questions/search?q={query}` | Buscar perguntas |
-| `GET` | `/questions/categories` | Listar categorias |
-| `GET` | `/questions/difficulties` | Listar dificuldades |
-
-### 🎯 Desafios
-
-| Método | Endpoint | Descrição |
-|--------|----------|------------|
-| `POST` | `/challenges/submit` | Submeter resposta |
-| `GET` | `/challenges/daily` | Desafio diário |
-| `GET` | `/challenges/quick` | Desafio rápido (3 perguntas) |
-| `GET` | `/challenges/category/{category}` | Desafio por categoria |
-| `POST` | `/challenges/batch-submit` | Submeter múltiplas respostas |
-
-### 🏆 Conquistas
-
-| Método | Endpoint | Descrição |
-|--------|----------|------------|
-| `GET` | `/achievements` | Listar todas as conquistas |
-| `GET` | `/achievements/available/{points}` | Conquistas disponíveis |
-| `GET` | `/achievements/category/{category}` | Conquistas por categoria |
-| `GET` | `/achievements/recent` | Conquistas recentes |
-| `GET` | `/achievements/check/{points}` | Verificar conquistas |
-| `GET` | `/achievements/leaderboard` | Ranking de conquistas |
-
-### 📊 Estatísticas
-
-| Método | Endpoint | Descrição |
-|--------|----------|------------|
-| `GET` | `/stats` | Estatísticas globais |
-| `GET` | `/stats/category/{category}` | Estatísticas por categoria |
-| `GET` | `/stats/difficulty/{difficulty}` | Estatísticas por dificuldade |
-| `GET` | `/stats/performance` | Estatísticas de performance |
-| `GET` | `/stats/summary` | Resumo das estatísticas |
-
-### 🔧 Sistema
-
-| Método | Endpoint | Descrição |
-|--------|----------|------------|
-| `GET` | `/` | Página inicial com documentação |
-| `GET` | `/health` | Status do servidor |
-
-## 📝 Exemplos de Uso
-
-### Submeter Resposta de Desafio
-
+#### **macOS (Homebrew)**
 ```bash
-curl -X POST http://localhost:8080/challenges/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "questionId": 1,
-    "answer": "Mercúrio",
-    "timeSpent": 15
-  }'
+brew tap dart-lang/dart
+brew install dart
 ```
 
-**Resposta:**
-```json
-{
-  "success": true,
-  "data": {
-    "isCorrect": true,
-    "correctAnswer": "Mercúrio",
-    "explanation": "Mercúrio é o primeiro planeta do sistema solar...",
-    "pointsEarned": 15,
-    "basePoints": 10,
-    "timeBonus": 5,
-    "timeSpent": 15
-  },
-  "message": "Parabéns! Resposta correta!"
-}
-```
-
-### Obter Desafio Diário
-
+#### **Ubuntu/Debian**
 ```bash
-curl http://localhost:8080/challenges/daily
+sudo apt-get update
+sudo apt-get install apt-transport-https
+wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'wget -q -O /etc/apt/sources.list.d/dart_stable.list https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list'
+sudo apt-get update
+sudo apt-get install dart
 ```
 
-**Resposta:**
-```json
-{
-  "success": true,
-  "data": {
-    "id": 3,
-    "question": "Qual é o maior planeta do sistema solar?",
-    "answers": ["Júpiter", "Saturno", "Urano", "Netuno"],
-    "difficulty": "Fácil",
-    "category": "Planetas",
-    "points": 10,
-    "date": "2024-01-15T10:30:00.000Z",
-    "dayOfYear": 15
-  },
-  "message": "Desafio diário carregado!"
-}
-```
+#### **Windows**
+1. Baixe o Dart SDK em: https://dart.dev/get-dart
+2. Extraia para `C:\dart`
+3. Adicione `C:\dart\bin` ao PATH
 
-### Verificar Conquistas Disponíveis
+## 🚀 **Instalação e Execução**
 
+### **1. Clonar o repositório**
 ```bash
-curl http://localhost:8080/achievements/available/150
+git clone <URL_DO_REPOSITORIO>
+cd fakuta-class/back
 ```
 
-**Resposta:**
-```json
-{
-  "success": true,
-  "data": {
-    "currentPoints": 150,
-    "achievements": [
-      {
-        "id": 1,
-        "name": "Explorador Iniciante",
-        "description": "Respondeu sua primeira pergunta...",
-        "icon": "🌍",
-        "points_required": 10,
-        "category": "Iniciante"
-      }
-    ],
-    "unlockedCount": 1,
-    "nextAchievement": {
-      "id": 2,
-      "name": "Astrônomo Amador",
-      "points_required": 200
-    }
-  },
-  "message": "Conquistas disponíveis carregadas!"
-}
+### **2. Instalar dependências**
+```bash
+dart pub get
 ```
 
-## 🗄️ Estrutura do Banco de Dados
+### **3. Executar o backend**
+```bash
+dart run lib/main.dart
+```
 
-### Tabela `questions`
-- `id` - ID único da pergunta
-- `question` - Texto da pergunta
-- `correct_answer` - Resposta correta
-- `wrong_answers` - Respostas incorretas (separadas por vírgula)
-- `explanation` - Explicação da resposta
-- `difficulty` - Nível de dificuldade (Fácil, Médio, Difícil)
-- `category` - Categoria da pergunta
-- `points` - Pontos base da pergunta
-- `created_at` - Data de criação
+### **4. Verificar se está funcionando**
+```bash
+curl http://localhost:8081/health
+```
 
-### Tabela `achievements`
-- `id` - ID único da conquista
-- `name` - Nome da conquista
-- `description` - Descrição da conquista
-- `icon` - Emoji/ícone da conquista
-- `points_required` - Pontos necessários para desbloquear
-- `category` - Categoria da conquista
-- `created_at` - Data de criação
+**Resposta esperada:**
+```
+Fukuta Backend - Sistema Solar Online! 🚀
+```
 
-### Tabela `global_stats`
-- `id` - ID único
-- `total_questions_answered` - Total de perguntas respondidas
-- `total_correct_answers` - Total de respostas corretas
-- `total_points_earned` - Total de pontos ganhos
-- `most_popular_category` - Categoria mais popular
-- `last_updated` - Última atualização
+## 📚 **Endpoints Disponíveis**
 
-## 🎮 Sistema de Pontuação
+### **🏥 Health Check**
+- `GET /health` - Status do servidor
 
-### Pontos Base
-- **Fácil**: 10 pontos
-- **Médio**: 15 pontos  
-- **Difícil**: 20 pontos
+### **❓ Perguntas**
+- `GET /questions` - Listar todas as perguntas
+- `GET /questions/random` - Pergunta aleatória
 
-### Bônus de Tempo
-- **≤ 10 segundos**: +5 pontos
-- **≤ 20 segundos**: +3 pontos
-- **≤ 30 segundos**: +1 ponto
-- **> 30 segundos**: +0 pontos
+### **🎯 Desafios**
+- `GET /challenges/daily` - Desafio diário
+- `GET /challenges/quick` - Desafio rápido
+- `GET /challenges/category/{category}` - Desafio por categoria
+- `POST /challenges/submit` - Submeter resposta
 
-## 🏆 Sistema de Conquistas
+### **🏆 Conquistas**
+- `GET /achievements` - Listar conquistas disponíveis
 
-### Níveis
-1. **🌍 Explorador Iniciante** - 10 pontos
-2. **🔭 Astrônomo Amador** - 50 pontos
-3. **🚀 Mestre do Sistema Solar** - 200 pontos
-4. **⭐ Sábio Espacial** - 500 pontos
-5. **🌟 Lenda do Cosmos** - 1000 pontos
+### **📊 Estatísticas**
+- `GET /stats` - Estatísticas globais
 
-## 📊 Estatísticas Disponíveis
+### **👤 Progresso do Usuário**
+- `POST /user-progress` - Salvar progresso
+- `GET /user-progress/{deviceId}` - Obter progresso
+- `PUT /user-progress/{deviceId}` - Atualizar progresso
+- `DELETE /user-progress/{deviceId}` - Resetar progresso
 
-- **Global**: Total de perguntas, acertos, pontos
-- **Por Categoria**: Performance em cada área
-- **Por Dificuldade**: Estatísticas por nível
-- **Performance**: Métricas de eficiência
-- **Resumo**: Visão geral compacta
+## 🗄️ **Banco de Dados**
 
-## 🚀 Como Executar
+O backend usa **SQLite** localmente. O arquivo é criado automaticamente em:
+```
+back/data/fukuta_challenges.db
+```
 
-1. **Desenvolvimento**:
-   ```bash
-   dart run lib/main.dart
-   ```
+### **Tabelas**
+- `questions` - Perguntas do sistema
+- `achievements` - Conquistas disponíveis
+- `global_stats` - Estatísticas globais
+- `user_progress` - Progresso dos usuários
 
-2. **Produção**:
-   ```bash
-   dart compile exe lib/main.dart
-   ./main
-   ```
+## 🔧 **Desenvolvimento**
 
-3. **Testes**:
-   ```bash
-   dart test
-   ```
+### **Estrutura do Projeto**
+```
+back/
+├── lib/
+│   ├── main.dart                 # Ponto de entrada
+│   ├── database/
+│   │   └── database_service.dart # Serviço de banco
+│   └── routes/
+│       ├── challenge_routes.dart  # Rotas de desafios
+│       ├── question_routes.dart   # Rotas de perguntas
+│       ├── achievement_routes.dart # Rotas de conquistas
+│       ├── stats_routes.dart      # Rotas de estatísticas
+│       └── user_progress_routes.dart # Rotas de progresso
+├── data/                         # Banco SQLite
+└── pubspec.yaml                  # Dependências
+```
 
-## 🌍 Configuração
+### **Comandos Úteis**
 
-O servidor roda por padrão em `http://localhost:8080`
+#### **Análise de Código**
+```bash
+dart analyze
+```
 
-Para alterar a porta, modifique a linha no `main.dart`:
+#### **Formatação**
+```bash
+dart format .
+```
+
+#### **Testes**
+```bash
+dart test
+```
+
+#### **Limpar Cache**
+```bash
+dart pub cache clean
+```
+
+## 🌐 **Configuração**
+
+### **Porta**
+O servidor roda na porta **8081** por padrão.
+
+### **Host**
+Configurado para `localhost` (127.0.0.1).
+
+### **URL Base**
+```
+http://localhost:8081
+```
+
+## 🐛 **Troubleshooting**
+
+### **Erro: Porta já em uso**
+```bash
+# Encontrar processo usando a porta 8081
+lsof -i :8081
+
+# Matar o processo
+kill -9 <PID>
+```
+
+### **Erro: Dependências não encontradas**
+```bash
+dart pub get
+dart pub cache repair
+```
+
+### **Erro: Banco de dados corrompido**
+```bash
+# Remover arquivo do banco (cuidado: perde todos os dados!)
+rm data/fukuta_challenges.db
+
+# Reiniciar o backend
+dart run lib/main.dart
+```
+
+### **Erro: Permissões**
+```bash
+# Dar permissões de escrita na pasta data
+chmod 755 data/
+```
+
+## 📱 **Integração com Frontend**
+
+O frontend Flutter se conecta automaticamente ao backend através dos endpoints REST.
+
+### **Configuração do Frontend**
 ```dart
-final server = await io.serve(handler, 'localhost', 8080);
+static const String baseUrl = 'http://localhost:8080';
 ```
 
-## 📱 Integração com App Flutter
+### **Teste de Conexão**
+```bash
+# Testar se o backend responde
+curl -X GET http://localhost:8081/health
 
-O backend está preparado para integração com o app Flutter:
+# Testar endpoint de progresso
+curl -X GET http://localhost:8081/user-progress/test-device
+```
 
-- **CORS habilitado** para requisições do app
-- **Respostas JSON** padronizadas
-- **Endpoints RESTful** para fácil consumo
-- **Validação de dados** robusta
+## 🤝 **Contribuição**
 
-## 🔒 Segurança
+1. **Fork** o repositório
+2. **Crie** uma branch para sua feature
+3. **Commit** suas mudanças
+4. **Push** para a branch
+5. **Abra** um Pull Request
 
-- **Validação de entrada** em todos os endpoints
-- **Tratamento de erros** abrangente
-- **Sanitização de dados** antes do processamento
-- **Logs de requisições** para monitoramento
-
-## 📈 Monitoramento
-
-- **Health check** em `/health`
-- **Logs automáticos** de todas as requisições
-- **Estatísticas em tempo real** disponíveis
-- **Métricas de performance** detalhadas
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📄 Licença
+## 📄 **Licença**
 
 Este projeto está sob a licença MIT.
 
-## 📞 Suporte
+## 👨‍💻 **Desenvolvedor**
 
-Para dúvidas ou suporte, abra uma issue no repositório.
+- **André Guerra** - Desenvolvedor Full Stack
+- **FATEC** - Projeto Acadêmico
 
 ---
 
-**Desenvolvido com ❤️ para o Sistema Solar Fukuta** 🚀✨
+## 🎯 **Próximos Passos**
+
+1. ✅ **Backend funcionando** - Sistema de rotas implementado
+2. ✅ **Banco SQLite** - Persistência de dados
+3. ✅ **API RESTful** - Endpoints para todas as funcionalidades
+4. 🔄 **Integração Frontend** - Sincronização em tempo real
+5. 🚀 **Deploy** - Preparar para produção
+
+**🌟 Sistema de Desafios Espaciais - Explore o universo! 🌟**

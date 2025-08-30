@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../domain/entities/question.dart';
 
 class QuestionModel extends Question {
@@ -13,7 +15,9 @@ class QuestionModel extends Question {
   });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
-    return QuestionModel(
+    debugPrint('🔍 QuestionModel.fromJson: $json');
+    
+    final result = QuestionModel(
       id: json['id'] as int,
       question: json['question'] as String,
       correctAnswer: json['correct_answer'] as String,
@@ -23,6 +27,9 @@ class QuestionModel extends Question {
       category: json['category'] as String,
       points: json['points'] as int,
     );
+    
+    debugPrint('🔍 QuestionModel criado: ID=${result.id}, Pergunta="${result.question}", Resposta correta="${result.correctAnswer}", Pontos=${result.points}');
+    return result;
   }
 
   Map<String, dynamic> toJson() {

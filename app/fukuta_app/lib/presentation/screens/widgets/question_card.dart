@@ -65,6 +65,25 @@ class _QuestionCardState extends State<QuestionCard>
   }
 
   @override
+  void didUpdateWidget(QuestionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Resetar estado quando a pergunta muda
+    if (oldWidget.question.id != widget.question.id) {
+      _selectedAnswer = null;
+      _answerSubmitted = false;
+      
+      // Reiniciar animações para a nova pergunta
+      _cardController.reset();
+      _answersController.reset();
+      _cardController.forward();
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _answersController.forward();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _cardController.dispose();
     _answersController.dispose();
@@ -150,7 +169,7 @@ class _QuestionCardState extends State<QuestionCard>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Pergunta $widget.questionIndex de $widget.totalQuestions',
+                'Pergunta ${widget.questionIndex} de ${widget.totalQuestions}',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white.withValues(alpha: 0.8),

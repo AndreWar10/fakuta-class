@@ -52,8 +52,6 @@ class UserProgress {
     final currentLevelPoints = levels[currentLevel];
     final nextLevelPoints = levels[currentLevel + 1];
     
-    if (nextLevelPoints == null) return 1.0;
-    
     final progress = totalPoints - currentLevelPoints;
     final range = nextLevelPoints - currentLevelPoints;
     

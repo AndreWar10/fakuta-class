@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../data/models/question_model.dart';
 import '../../data/models/achievement_model.dart';
@@ -12,7 +13,7 @@ class HiveConfig {
     Hive.registerAdapter(AchievementModelAdapter());
     Hive.registerAdapter(UserProgressModelAdapter());
     
-    print('🗄️ Hive inicializado com sucesso!');
+    debugPrint('🗄️ Hive inicializado com sucesso!');
   }
 }
 

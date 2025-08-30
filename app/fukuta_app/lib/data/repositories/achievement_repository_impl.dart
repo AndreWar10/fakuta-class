@@ -2,7 +2,6 @@ import '../../domain/entities/achievement.dart';
 import '../../domain/repositories/achievement_repository.dart';
 import '../datasources/remote/challenge_remote_data_source.dart';
 import '../datasources/local/challenge_local_data_source.dart';
-import '../models/achievement_model.dart';
 
 class AchievementRepositoryImpl implements AchievementRepository {
   final ChallengeRemoteDataSource remoteDataSource;
@@ -17,10 +16,13 @@ class AchievementRepositoryImpl implements AchievementRepository {
       final achievements = await remoteDataSource.getAchievements();
       // Cache local
       await localDataSource.cacheAchievements(achievements);
+      // AchievementModel herda de Achievement, então pode retornar diretamente
       return achievements;
     } catch (e) {
       // Fallback para cache local
-      return await localDataSource.getCachedAchievements();
+      final cachedAchievements = await localDataSource.getCachedAchievements();
+      // AchievementModel herda de Achievement, então pode retornar diretamente
+      return cachedAchievements;
     }
   }
 
@@ -50,7 +52,13 @@ class AchievementRepositoryImpl implements AchievementRepository {
     
     if (lockedAchievements.isEmpty) return null;
     
-    return lockedAchievements
+    if (lockedAchievements.length == 1) {
+      return lockedAchievements.first;
+    }
+    
+    // Garantir que todos os elementos são do tipo Achievement
+    final typedAchievements = lockedAchievements.cast<Achievement>();
+    return typedAchievements
         .reduce((a, b) => a.pointsRequired < b.pointsRequired ? a : b);
   }
 
@@ -64,10 +72,19 @@ class AchievementRepositoryImpl implements AchievementRepository {
         .where((a) => a.pointsRequired <= currentPoints)
         .toList();
     
-    final previousAchievement = unlockedAchievements
-        .where((a) => a.pointsRequired < nextAchievement.pointsRequired)
-        .fold<Achievement?>(null, (a, b) => 
-            a == null || b.pointsRequired > a.pointsRequired ? b : a);
+    Achievement? previousAchievement;
+    if (unlockedAchievements.isNotEmpty) {
+      final filteredAchievements = unlockedAchievements
+          .where((a) => a.pointsRequired < nextAchievement.pointsRequired)
+          .toList();
+      
+      if (filteredAchievements.isNotEmpty) {
+        // Garantir que todos os elementos são do tipo Achievement
+        final typedFilteredAchievements = filteredAchievements.cast<Achievement>();
+        previousAchievement = typedFilteredAchievements
+            .reduce((a, b) => a.pointsRequired > b.pointsRequired ? a : b);
+      }
+    }
     
     if (previousAchievement != null) {
       final range = nextAchievement.pointsRequired - previousAchievement.pointsRequired;

@@ -1,4 +1,3 @@
-import '../entities/achievement.dart';
 import '../repositories/achievement_repository.dart';
 import '../repositories/user_progress_repository.dart';
 
@@ -17,12 +16,16 @@ class GetUserAchievements {
     
     return {
       'currentPoints': progress.totalPoints,
+      'questionsAnswered': progress.questionsAnswered,
+      'correctAnswers': progress.correctAnswers,
       'unlockedAchievements': unlockedAchievements,
       'lockedAchievements': allAchievements.where((a) => !unlockedAchievements.contains(a)).toList(),
       'nextAchievement': nextAchievement,
       'progressToNext': progressToNext,
       'totalAchievements': allAchievements.length,
       'unlockedCount': unlockedAchievements.length,
+      'categoryPoints': progress.categoryPoints,
+      'difficultyPoints': progress.difficultyPoints,
     };
   }
 }

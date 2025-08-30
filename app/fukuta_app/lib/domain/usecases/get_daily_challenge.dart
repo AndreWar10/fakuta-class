@@ -1,5 +1,4 @@
 import '../entities/challenge.dart';
-import '../entities/question.dart';
 import '../repositories/challenge_repository.dart';
 
 class GetDailyChallenge {

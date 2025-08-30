@@ -11,7 +11,10 @@ class ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🎨 ProgressCard: build() chamado - userProgress: ${userProgress?.totalPoints} pontos, ${userProgress?.correctAnswers} acertos, ${userProgress?.questionsAnswered} respondidas');
+    
     if (userProgress == null) {
+      debugPrint('🎨 ProgressCard: userProgress é null, mostrando loading');
       return _buildLoadingCard();
     }
 

@@ -1,5 +1,4 @@
 import '../../domain/entities/user_progress.dart';
-import '../../domain/entities/achievement.dart';
 import 'achievement_model.dart';
 
 class UserProgressModel extends UserProgress {

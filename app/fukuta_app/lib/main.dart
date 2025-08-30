@@ -3,26 +3,35 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math' as math;
 import 'planet_images.dart';
+import 'core/config/hive_config.dart';
+import 'core/di/dependency_injection.dart';
+import 'presentation/screens/challenges_screen.dart';
 
-void main() => runApp(const SolarSystemApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveConfig.initialize();
+  runApp(const SolarSystemApp());
+}
 
 class SolarSystemApp extends StatelessWidget {
   const SolarSystemApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sistema Solar',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1A237E),
-          brightness: Brightness.dark,
+    return DependencyInjection.buildProviders(
+      child: MaterialApp(
+        title: 'Sistema Solar',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF1A237E),
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
+          fontFamily: 'Roboto',
         ),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
+        home: const SpaceHomePage(),
       ),
-      home: const SpaceHomePage(),
     );
   }
 }
@@ -111,6 +120,27 @@ class _SpaceHomePageState extends State<SpaceHomePage>
           );
         },
         transitionDuration: const Duration(milliseconds: 800),
+      ),
+    );
+  }
+
+  void _navigateToChallenges() {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => const ChallengesScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutBack,
+            )),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 600),
       ),
     );
   }
@@ -297,67 +327,139 @@ class _SpaceHomePageState extends State<SpaceHomePage>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // Explore Button
-                            AnimatedBuilder(
-                              animation: _titleAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                  scale: _titleAnimation.value,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: math.max(MediaQuery.of(context).size.height * 0.07, 50),
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF1A237E),
-                                          Color(0xFF3949AB),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(30),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.blue.withValues(alpha: 0.4),
-                                          blurRadius: 20,
-                                          spreadRadius: 5,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(30),
-                                        onTap: _navigateToSolarSystem,
-                                        child: Center(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.explore,
-                                                color: Colors.white,
-                                                size: MediaQuery.of(context).size.width * 0.06,
-                                              ),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                                              Flexible(
-                                                child: Text(
-                                                  'EXPLORAR SISTEMA SOLAR',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: math.max(MediaQuery.of(context).size.width * 0.045, 16),
-                                                    fontWeight: FontWeight.bold,
-                                                    letterSpacing: 1,
-                                                  ),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                ),
+                            // Buttons Row
+                            Row(
+                              children: [
+                                // Explore Button
+                                Expanded(
+                                  child: AnimatedBuilder(
+                                    animation: _titleAnimation,
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale: _titleAnimation.value,
+                                        child: Container(
+                                          height: math.max(MediaQuery.of(context).size.height * 0.07, 50),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF1A237E),
+                                                Color(0xFF3949AB),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(30),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.blue.withValues(alpha: 0.4),
+                                                blurRadius: 20,
+                                                spreadRadius: 5,
                                               ),
                                             ],
                                           ),
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.circular(30),
+                                              onTap: _navigateToSolarSystem,
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.explore,
+                                                      color: Colors.white,
+                                                      size: MediaQuery.of(context).size.width * 0.06,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                                                    Flexible(
+                                                      child: Text(
+                                                        'EXPLORAR',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: math.max(MediaQuery.of(context).size.width * 0.04, 14),
+                                                          fontWeight: FontWeight.bold,
+                                                          letterSpacing: 1,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
+                                ),
+                                
+                                const SizedBox(width: 16),
+                                
+                                // Challenges Button
+                                Expanded(
+                                  child: AnimatedBuilder(
+                                    animation: _titleAnimation,
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale: _titleAnimation.value,
+                                        child: Container(
+                                          height: math.max(MediaQuery.of(context).size.height * 0.07, 50),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFFE65100),
+                                                Color(0xFFFF6F00),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(30),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.orange.withValues(alpha: 0.4),
+                                                blurRadius: 20,
+                                                spreadRadius: 5,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.circular(30),
+                                              onTap: _navigateToChallenges,
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.quiz,
+                                                      color: Colors.white,
+                                                      size: MediaQuery.of(context).size.width * 0.06,
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                                                    Flexible(
+                                                      child: Text(
+                                                        'DESAFIOS',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: math.max(MediaQuery.of(context).size.width * 0.04, 14),
+                                                          fontWeight: FontWeight.bold,
+                                                          letterSpacing: 1,
+                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

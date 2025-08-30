@@ -1,8 +1,8 @@
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
-import 'package:shelf_cors_headers/cors_headers.dart';
+// import 'package:shelf_cors_headers/cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
-import 'package:path/path.dart' as path;
+// import 'package:path/path.dart' as path;
 
 import 'database/database_service.dart';
 import 'routes/challenge_routes.dart';
@@ -95,9 +95,8 @@ void main() async {
     ''', headers: {'content-type': 'text/html; charset=utf-8'});
   });
   
-  // Configurar CORS
+  // Configurar handler
   final handler = const Pipeline()
-      .addMiddleware(corsHeaders())
       .addMiddleware(logRequests())
       .addHandler(router);
   

@@ -127,9 +127,9 @@ void statsRoutes(Router router, DatabaseService dbService) {
       
       // Perguntas mais difíceis (mais pontos)
       final topQuestions = questions
-          .sorted((a, b) => (b['points'] as int).compareTo(a['points'] as int))
-          .take(5)
-          .toList();
+          .toList()
+          ..sort((a, b) => (b['points'] as int).compareTo(a['points'] as int))
+          ..take(5);
       
       return Response.ok(
         jsonEncode({
@@ -200,9 +200,9 @@ void statsRoutes(Router router, DatabaseService dbService) {
       
       // Perguntas da categoria
       final topQuestions = questions
-          .sorted((a, b) => (b['points'] as int).compareTo(a['points'] as int))
-          .take(10)
-          .toList();
+          .toList()
+          ..sort((a, b) => (b['points'] as int).compareTo(a['points'] as int))
+          ..take(10);
       
       return Response.ok(
         jsonEncode({

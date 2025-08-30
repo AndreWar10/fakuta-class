@@ -210,7 +210,7 @@ void challengeRoutes(Router router, DatabaseService dbService) {
           'data': {
             'questions': randomQuestions,
             'totalQuestions': randomQuestions.length,
-            'totalPossiblePoints': randomQuestions.fold(0, (sum, q) => sum + q['points'])
+            'totalPossiblePoints': randomQuestions.fold<int>(0, (sum, q) => sum + (q['points'] as int))
           },
           'message': 'Desafio rápido carregado!'
         }),
@@ -269,7 +269,7 @@ void challengeRoutes(Router router, DatabaseService dbService) {
             'category': category,
             'questions': selectedQuestions,
             'totalQuestions': selectedQuestions.length,
-            'totalPossiblePoints': selectedQuestions.fold(0, (sum, q) => sum + q['points'])
+            'totalPossiblePoints': selectedQuestions.fold<int>(0, (sum, q) => sum + (q['points'] as int))
           },
           'message': 'Desafio da categoria $category carregado!'
         }),

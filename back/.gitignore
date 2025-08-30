@@ -1,0 +1,33 @@
+# Dart
+.dart_tool/
+.packages
+pubspec.lock
+
+# Build
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Database
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
